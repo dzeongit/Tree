@@ -118,6 +118,7 @@ Status DestroyTree(CSTree& T) {
 		DestroyTree(T->firstChild);
 		DestroyTree(T->nextSibling);
 		free(T);
+		T = NULL;
 		return OK;
 	}
 	return ERROR;
@@ -200,6 +201,7 @@ Status DeleteChild(CSTree& T, int i) {
 		for (j = 2; p != NULL && j < i; i++)p = p->nextSibling;
 		if (j == i) {
 			DestroyTree(p->nextSibling);
+			p->nextSibling = NULL;
 		}
 		else return ERROR;
 	}
@@ -260,7 +262,8 @@ void LevelTraversal(CSTree T) {
 	}
 }
 void PrintTreeInfo(CSTree T) {
-	printf("树的先根遍历输出为：\n");
+	printf("\n---------------------------------------------\n");
+	printf("\n树的先根遍历输出为：\n");
 	PreorderTraversal(T);
 	printf("\n树的后根遍历输出为：\n");
 	PostorderTraversal(T);
@@ -278,11 +281,29 @@ int main()
 {
 	int i = 0;
 	int a;
-	char tree1[] = "ABF#G##C#E###";
-	CSTree s, j;
-	s = CreateTree(tree1, i);
+	char tree1[] = "ABF#G##C#E###";//孩子兄弟排序输入，无则#
+	CSTree s, j,k;
+	s = CreateTree(tree1, i);//依据tree1构建一棵树s
 	PrintTreeInfo(s);
-	j = MakeTree('U', 1, s);
+
+
+	j = MakeTree('U', 1, s);//测试创建根节点U和1棵子树s的树j
+	PrintTreeInfo(j);
+
+
+	k=Search(j, 'G');//测试在树j中搜索节点G
+	PrintTreeInfo(k);
+
+
+	s = MakeTree('V', 0);
+	InsertChild(j, 2, s);//测试插入s为j的第2棵子树，s非空并于j不相交
+	PrintTreeInfo(j);
+	
+
+	DeleteChild(j, 2);//测试删除树j的第2棵子树
+	PrintTreeInfo(j);
+
+	DestroyTree(j);//测试销毁树j
 	PrintTreeInfo(j);
 	return 0;
 }
